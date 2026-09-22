@@ -1,0 +1,3 @@
+acseo_sylius_geo_plugin_api_shop_geo:
+    resource: api_shop/geo.yaml
+    prefix: /%acseo_sylius_geo_plugin.routing.api_shop_geo_prefix%

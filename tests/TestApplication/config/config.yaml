@@ -1,0 +1,14 @@
+imports:
+    - { resource: "@ACSEOSyliusGeoPlugin/config/config.yaml" }
+    - { resource: "services_test.php" }
+
+twig:
+    paths:
+        '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+
+acseo_sylius_geo_plugin:
+    product_exclusion:
+        taxon_codes: ['geo-private']
+        attribute_codes: ['geo_hidden']
+        attribute_values:
+            geo_visibility: ['private']

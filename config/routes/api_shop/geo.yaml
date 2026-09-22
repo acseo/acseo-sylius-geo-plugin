@@ -1,0 +1,11 @@
+acseo_sylius_geo_plugin_api_shop_llm_txt:
+    path: /%acseo_sylius_geo_plugin.routing.api_shop_llm_txt_path%
+    methods: [GET]
+    defaults:
+        _controller: ACSEO\SyliusGeoPlugin\Controller\Api\LlmTxtApiController
+        _sylius:
+            section: shop_api
+
+acseo_sylius_geo_plugin_api_shop_geo_products:
+    resource: geo/products.yaml
+    prefix: /%acseo_sylius_geo_plugin.routing.api_shop_geo_products_prefix%

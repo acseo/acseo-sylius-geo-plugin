@@ -1,0 +1,15 @@
+/.editorconfig              export-ignore
+/.gitattributes             export-ignore
+/.github                    export-ignore
+/.gitignore                 export-ignore
+/ecs.php                    export-ignore
+/Makefile                   export-ignore
+/behat.yml.dist             export-ignore
+/compose.override.dist.yml  export-ignore
+/compose.yml                export-ignore
+/docs                       export-ignore
+/etc                        export-ignore
+/features                   export-ignore
+/phpstan.dist.neon          export-ignore
+/phpunit.xml.dist           export-ignore
+/tests                      export-ignore

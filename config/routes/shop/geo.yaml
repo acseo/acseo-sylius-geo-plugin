@@ -1,0 +1,11 @@
+acseo_sylius_geo_plugin_shop_geo_sitemap:
+    path: /sitemap.xml
+    methods: [GET]
+    defaults:
+        _controller: ACSEO\SyliusGeoPlugin\Controller\SitemapController
+        _sylius:
+            section: shop
+
+acseo_sylius_geo_plugin_shop_geo_products:
+    resource: geo/products.yaml
+    prefix: /%acseo_sylius_geo_plugin.routing.geo_products_prefix%
