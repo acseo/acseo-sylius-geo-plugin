@@ -1,0 +1,7 @@
+parameters:
+    acseo_sylius_geo_plugin.routing.llm_txt_path: 'llm.txt'
+    acseo_sylius_geo_plugin.routing.geo_prefix: 'geo'
+    acseo_sylius_geo_plugin.routing.geo_products_prefix: 'products'
+    acseo_sylius_geo_plugin.routing.api_shop_geo_prefix: 'shop/geo'
+    acseo_sylius_geo_plugin.routing.api_shop_llm_txt_path: 'llm-txt'
+    acseo_sylius_geo_plugin.routing.api_shop_geo_products_prefix: 'products'
