@@ -1,0 +1,43 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+    -
+        type: input
+        id: versions
+        attributes:
+            label: Versions
+            description: Plugin, Sylius, Symfony and PHP versions.
+            placeholder: "plugin 0.1.0, Sylius 2.3.2, Symfony 7.4, PHP 8.3"
+        validations:
+            required: true
+    -
+        type: dropdown
+        id: surface
+        attributes:
+            label: Where does it happen?
+            options:
+                - llms.txt
+                - GEO sitemap
+                - Product Markdown (dedicated .md route or Accept negotiation)
+                - Taxon Markdown (Accept negotiation)
+                - Shop API GEO endpoints
+                - Diagnostic commands (audit, debug-product, debug-taxon)
+                - Other
+        validations:
+            required: true
+    -
+        type: textarea
+        id: description
+        attributes:
+            label: What happens, and what did you expect?
+        validations:
+            required: true
+    -
+        type: textarea
+        id: steps
+        attributes:
+            label: Steps to reproduce
+            description: Include the request URL, the Accept header and the response headers when relevant, and the plugin configuration, without any secret.
+        validations:
+            required: true

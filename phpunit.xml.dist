@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    colors="true"
+    bootstrap="vendor/sylius/test-application/config/bootstrap.php"
+>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+
+    <php>
+        <server name="KERNEL_CLASS" value="Sylius\TestApplication\Kernel" />
+        <server name="IS_DOCTRINE_ORM_SUPPORTED" value="true"/>
+
+        <server name="APP_ENV" value="test" force="true"/>
+        <env name="APP_ENV" value="test" force="true"/>
+        <env name="APP_SECRET" value="''"/>
+        <!-- Console output is word-wrapped to the terminal width; pin it so assertions on messages do not depend on it -->
+        <env name="COLUMNS" value="200" force="true"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="all">
+            <directory>tests</directory>
+        </testsuite>
+
+        <testsuite name="unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
