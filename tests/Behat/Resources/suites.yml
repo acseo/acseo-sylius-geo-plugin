@@ -1,0 +1,22 @@
+default:
+    suites:
+        acseo_sylius_geo_plugin_ui:
+            contexts:
+                - sylius.behat.context.hook.doctrine_orm
+                - sylius.behat.context.hook.session
+
+                - sylius.behat.context.transform.channel
+                - sylius.behat.context.transform.lexical
+                - sylius.behat.context.transform.product
+                - sylius.behat.context.transform.taxon
+                - sylius.behat.context.transform.shared_storage
+
+                - sylius.behat.context.setup.channel
+                - sylius.behat.context.setup.product
+                - sylius.behat.context.setup.taxonomy
+
+                - Tests\ACSEO\SyliusGeoPlugin\Behat\Context\Ui\Shop\GeoHttpContext
+            filters:
+                tags: "@acseo_geo&&@ui&&~@javascript&&~@mink:chromedriver"
+            paths:
+                - "%paths.base%/features/shop"

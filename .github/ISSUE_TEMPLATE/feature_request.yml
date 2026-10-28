@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an improvement.
+labels: [enhancement]
+body:
+    -
+        type: textarea
+        id: need
+        attributes:
+            label: What problem do you want to solve?
+        validations:
+            required: true
+    -
+        type: textarea
+        id: proposal
+        attributes:
+            label: Proposed behavior
+        validations:
+            required: false
+    -
+        type: textarea
+        id: extension_points
+        attributes:
+            label: Extension points
+            description: The interfaces, events, tagged providers or configuration keys you would use, if any.
+        validations:
+            required: false

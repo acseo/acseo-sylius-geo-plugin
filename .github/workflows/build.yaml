@@ -1,0 +1,146 @@
+name: CI
+
+on:
+    push:
+        branches-ignore:
+            - 'dependabot/**'
+        paths-ignore:
+            - "**/*.md"
+    pull_request:
+        paths-ignore:
+            - "**/*.md"
+    schedule:
+        -
+            cron: "0 1 * * 6" # Run at 1am every Saturday
+    workflow_dispatch: ~
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+
+        name: "Sylius ${{ matrix.sylius }}, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, ${{ matrix.database }}, ${{ matrix.dependencies }}"
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.3", "8.4"]
+                symfony: ["^6.4", "^7.4"]
+                sylius: ["~2.0.0", "~2.1.0", "~2.2.0", "~2.3.0"]
+                database: ["mysql:8.4"]
+                dependencies: ["highest"]
+
+                exclude:
+                    - sylius: "~2.0.0"
+                      symfony: "^7.4"
+
+                include:
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mysql:8.0"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mariadb:10.11"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mariadb:11.4"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:15"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:16"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:17"
+                      dependencies: "highest"
+                    - php: "8.3"
+                      symfony: "^6.4"
+                      sylius: "~2.0.0"
+                      database: "mysql:8.4"
+                      dependencies: "lowest"
+
+        env:
+            APP_ENV: test
+
+        steps:
+            -
+                uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+            -
+                uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+                with:
+                    php-version: "${{ matrix.php }}"
+                    extensions: intl, gd, xmlwriter, pdo_mysql, pdo_pgsql
+                    tools: composer:v2
+                    coverage: none
+
+            -
+                name: Resolve the supported dependency set
+                env:
+                    DEPENDENCIES: "${{ matrix.dependencies }}"
+                    SYLIUS_VERSION: "${{ matrix.sylius }}"
+                    SYMFONY_VERSION: "${{ matrix.symfony }}"
+                run: |
+                    composer validate --strict --no-check-lock
+                    composer global config --no-plugins allow-plugins.symfony/flex true
+                    composer global require "symfony/flex:^2.4" --no-plugins --no-scripts --no-interaction
+                    composer config extra.symfony.require "$SYMFONY_VERSION"
+                    composer require "sylius/sylius:$SYLIUS_VERSION" --no-update --no-scripts
+                    composer require --dev "sylius/test-application:$SYLIUS_VERSION@alpha >=2.0.0-alpha.7" --no-update --no-scripts
+                    if [ "$DEPENDENCIES" = "lowest" ]; then
+                        composer update --prefer-lowest --with "symfony/flex:^2.4" --no-install --no-scripts --no-interaction
+                    else
+                        composer update --prefer-stable --no-install --no-scripts --no-interaction
+                    fi
+
+            -
+                name: Build Sylius Test Application
+                uses: SyliusLabs/BuildTestAppAction@c3b108b5f3c299c55f429a8cf0ed88734d4f4979 # v4.3.1
+                with:
+                    build_type: "plugin"
+                    e2e_js: "no"
+                    cache_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}"
+                    cache_restore_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-"
+                    database: "${{ matrix.database }}"
+                    php_version: "${{ matrix.php }}"
+                    sylius_version: "${{ matrix.sylius }}"
+                    symfony_version: "${{ matrix.symfony }}"
+                    php_extensions: "intl, gd, xmlwriter, mysql, pdo_mysql, pgsql, pdo_pgsql"
+
+            -
+                name: Run the quality checks and the tests
+                run: make validate lint ecs phpunit behat RUN= BEHAT_RUN=
+
+            -
+                name: Run PHPStan
+                if: matrix.symfony == '^7.4'
+                run: make phpstan RUN=
+
+            -
+                name: Upload Behat logs
+                uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+                if: failure()
+                with:
+                    name: "behat-logs-${{ strategy.job-index }}"
+                    path: etc/build/
+                    if-no-files-found: ignore
+                    compression-level: 6
+                    overwrite: true
