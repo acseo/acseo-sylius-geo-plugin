@@ -103,6 +103,9 @@ jobs:
                     composer global config --no-plugins allow-plugins.symfony/flex true
                     composer global require "symfony/flex:^2.4" --no-plugins --no-scripts --no-interaction
                     composer config extra.symfony.require "$SYMFONY_VERSION"
+                    if [ "$SYLIUS_VERSION" = "~2.0.0" ]; then
+                        composer config policy.advisories.block false
+                    fi
                     composer require "sylius/sylius:$SYLIUS_VERSION" --no-update --no-scripts
                     composer require --dev "sylius/test-application:$SYLIUS_VERSION@alpha >=2.0.0-alpha.7" --no-update --no-scripts
                     if [ "$DEPENDENCIES" = "lowest" ]; then
