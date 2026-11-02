@@ -578,6 +578,7 @@ final class LlmTxtGeneratorTest extends TestCase
         $country = $this->createMock(CountryInterface::class);
         $country->method('getName')->willReturn('France');
         $country->method('getCode')->willReturn('FR');
+        $country->method('isEnabled')->willReturn(true);
 
         $channel = $this->createMock(ChannelInterface::class);
         $channel->method('getCode')->willReturn($code);
@@ -586,7 +587,7 @@ final class LlmTxtGeneratorTest extends TestCase
         $channel->method('getBaseCurrency')->willReturn($currency);
         $channel->method('getCurrencies')->willReturn(new ArrayCollection($currencies));
         $channel->method('getLocales')->willReturn(new ArrayCollection([$locale]));
-        $channel->method('getEnabledCountries')->willReturn(new ArrayCollection([$country]));
+        $channel->method('getCountries')->willReturn(new ArrayCollection([$country]));
 
         return $channel;
     }

@@ -99,7 +99,11 @@ final class LlmTxtChannelInfo
         }
 
         $countries = [];
-        foreach ($channel->getEnabledCountries() as $country) {
+        foreach ($channel->getCountries() as $country) {
+            if (true !== $country->isEnabled()) {
+                continue;
+            }
+
             $label = trim((string) ($country->getName() ?? $country->getCode()));
             if ('' !== $label) {
                 $countries[] = $label;
