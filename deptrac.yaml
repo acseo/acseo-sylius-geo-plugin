@@ -1,0 +1,45 @@
+deptrac:
+    paths:
+        - ./src
+    layers:
+        - { name: Model, collectors: [{ type: directory, value: src/Model/.* }] }
+        - { name: Exception, collectors: [{ type: directory, value: src/Exception/.* }] }
+        - { name: Channel, collectors: [{ type: directory, value: src/Channel/.* }] }
+        - { name: Taxon, collectors: [{ type: directory, value: src/Taxon/.* }] }
+        - { name: Attribute, collectors: [{ type: directory, value: src/Attribute/.* }] }
+        - { name: Url, collectors: [{ type: directory, value: src/Url/.* }] }
+        - { name: Locale, collectors: [{ type: directory, value: src/Locale/.* }] }
+        - { name: Markdown, collectors: [{ type: directory, value: src/Markdown/.* }] }
+        - { name: Translation, collectors: [{ type: directory, value: src/Translation/.* }] }
+        - { name: Checker, collectors: [{ type: directory, value: src/Checker/.* }] }
+        - { name: Catalog, collectors: [{ type: directory, value: src/Catalog/.* }] }
+        - { name: Event, collectors: [{ type: directory, value: src/Event/.* }] }
+        - { name: Provider, collectors: [{ type: directory, value: src/Provider/.* }] }
+        - { name: Generator, collectors: [{ type: directory, value: src/Generator/.* }] }
+        - { name: Http, collectors: [{ type: directory, value: src/Http/.* }] }
+        - { name: Controller, collectors: [{ type: directory, value: src/Controller/.* }] }
+        - { name: EventSubscriber, collectors: [{ type: directory, value: src/EventSubscriber/.* }] }
+        - { name: Command, collectors: [{ type: directory, value: src/Command/.* }] }
+        - { name: DependencyInjection, collectors: [{ type: directory, value: src/DependencyInjection/.* }] }
+        - { name: Bundle, collectors: [{ type: classNameRegex, value: '#^ACSEO\\SyliusGeoPlugin\\ACSEOSyliusGeoPlugin$#' }] }
+    ruleset:
+        Model: ~
+        Exception: ~
+        Channel: ~
+        Taxon: ~
+        Attribute: ~
+        Url: ~
+        Locale: [Exception]
+        Markdown: [Model]
+        Translation: [Checker]
+        Checker: [Model, Taxon, Attribute, Locale, Http]
+        Catalog: [Checker]
+        Event: [Model]
+        Provider: [Model, Markdown, Translation]
+        Generator: [Attribute, Catalog, Checker, Event, Exception, Locale, Markdown, Model, Provider, Translation, Url]
+        Http: [Event, Exception, Generator, Locale, Channel]
+        Controller: [Channel, Generator, Http, Locale, Url]
+        EventSubscriber: [Channel, Exception, Http, Locale]
+        Command: [Catalog, Channel, Checker, Exception, Generator, Http, Locale, Translation, Url]
+        DependencyInjection: [Model]
+        Bundle: [DependencyInjection]

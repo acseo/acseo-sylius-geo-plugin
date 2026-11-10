@@ -1,0 +1,35 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-webmozart-assert/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/ekino/phpstan-banned-code/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests/Behat
+
+    excludePaths:
+        - 'tests/TestApplication/src/**.php'
+
+    banned_code:
+        nodes:
+            -
+                type: Stmt_Echo
+                functions: null
+            -
+                type: Expr_Eval
+                functions: null
+            -
+                type: Expr_Exit
+                functions: null
+            -
+                type: Expr_FuncCall
+                functions:
+                    - dd
+                    - debug_zval_dump
+                    - dump
+                    - phpinfo
+                    - print_r
+                    - var_dump

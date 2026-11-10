@@ -1,0 +1,8 @@
+{
+    "path": ["assets"],
+    "format": ["javascript", "scss"],
+    "minLines": 5,
+    "minTokens": 50,
+    "threshold": 0,
+    "reporters": ["console"]
+}

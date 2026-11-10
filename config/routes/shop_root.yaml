@@ -1,0 +1,17 @@
+acseo_sylius_geo_plugin_shop_llm_txt_root:
+    path: /%acseo_sylius_geo_plugin.routing.llm_txt_path%
+    methods: [GET]
+    defaults:
+        _controller: ACSEO\SyliusGeoPlugin\Controller\LlmTxtRootRedirectController
+        _acseo_sylius_geo_plugin_endpoint: llm_txt
+        _sylius:
+            section: shop
+
+acseo_sylius_geo_plugin_shop_geo_sitemap_root:
+    path: /%acseo_sylius_geo_plugin.routing.geo_prefix%/sitemap.xml
+    methods: [GET]
+    defaults:
+        _controller: ACSEO\SyliusGeoPlugin\Controller\SitemapController
+        _acseo_sylius_geo_plugin_endpoint: sitemap
+        _sylius:
+            section: shop

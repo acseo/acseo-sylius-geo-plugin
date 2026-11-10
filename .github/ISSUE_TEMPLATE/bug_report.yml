@@ -1,0 +1,41 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+    -
+        type: input
+        id: versions
+        attributes:
+            label: Versions
+            description: Plugin, Sylius, Symfony and PHP versions.
+            placeholder: "plugin 1.0.0, Sylius 2.3.2, Symfony 7.4, PHP 8.3"
+        validations:
+            required: true
+    -
+        type: dropdown
+        id: surface
+        attributes:
+            label: Where does it happen?
+            options:
+                - Admin
+                - Shop
+                - API
+                - Console command
+                - Other
+        validations:
+            required: true
+    -
+        type: textarea
+        id: description
+        attributes:
+            label: What happens, and what did you expect?
+        validations:
+            required: true
+    -
+        type: textarea
+        id: steps
+        attributes:
+            label: Steps to reproduce
+            description: For an API problem, include the request and the response, without any token, password or other secret.
+        validations:
+            required: true

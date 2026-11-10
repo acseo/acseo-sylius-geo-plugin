@@ -1,0 +1,179 @@
+name: Build
+
+on:
+    push:
+        branches-ignore:
+            - 'dependabot/**'
+        paths-ignore:
+            - "*.md"
+    pull_request:
+        paths-ignore:
+            - "*.md"
+    release:
+        types: [created]
+    schedule:
+        -
+            cron: "0 1 * * 6" # Run at 1am every Saturday
+    workflow_dispatch: ~
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+
+        name: "Sylius ${{ matrix.sylius }}, PHP ${{ matrix.php }}, Symfony ${{ matrix.symfony }}, ${{ matrix.database }}"
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php: ["8.3"]
+                symfony: ["^6.4", "^7.4"]
+                sylius: ["~2.0.0", "~2.1.0", "~2.2.0", "~2.3.0"]
+                database: ["mysql:8.4"]
+                node: ["22.x"]
+
+                exclude:
+                    - sylius: "~2.0.0"
+                      symfony: "^7.4"
+
+                include:
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mysql:8.0"
+                      node: "22.x"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mariadb:10.11"
+                      node: "22.x"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "mariadb:11.4"
+                      node: "22.x"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:15"
+                      node: "22.x"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:16"
+                      node: "22.x"
+                    - php: "8.3"
+                      symfony: "^7.4"
+                      sylius: "~2.2.0"
+                      database: "postgres:17"
+                      node: "22.x"
+
+        env:
+            COMPOSER_NO_SECURITY_BLOCKING: ${{ (matrix.sylius == '~2.0.0' || matrix.sylius == '~2.1.0') && '1' || '0' }}
+            APP_ENV: test
+            SYLIUS_TEST_APP_BUNDLES_PATH: "tests/TestApplication/config/bundles.php"
+            SYLIUS_TEST_APP_CONFIGS_TO_IMPORT: "@ACSEOSyliusGeoPlugin/tests/TestApplication/config/config.yaml"
+            SYLIUS_TEST_APP_ROUTES_TO_IMPORT: "@ACSEOSyliusGeoPlugin/tests/TestApplication/config/routes.yaml"
+            BEHAT_BASE_URL: "http://127.0.0.1:8080/"
+
+        steps:
+            -
+                uses: actions/checkout@v4
+
+            -
+                name: Build Sylius Test Application
+                uses: SyliusLabs/BuildTestAppAction@v4
+                with:
+                    e2e_js: "yes"
+                    cache_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}"
+                    cache_restore_key: "${{ runner.os }}-php-${{ matrix.php }}-composer-"
+                    database: "${{ matrix.database }}"
+                    node_version: "${{ matrix.node }}"
+                    php_version: "${{ matrix.php }}"
+                    sylius_version: "${{ matrix.sylius }}"
+                    symfony_version: "${{ matrix.symfony }}"
+
+            -
+                name: Run unit tests
+                run: vendor/bin/phpunit --colors=always --testsuite=unit
+
+            -
+                name: Validate composer.json
+                run: composer validate --ansi --strict
+
+            -
+                name: Run PHPStan
+                if: matrix.symfony == '^7.4'
+                run: vendor/bin/phpstan analyse -c phpstan.neon --no-progress
+
+            -
+                name: Run ECS
+                run: vendor/bin/ecs check --no-progress-bar
+
+            -
+                name: Run Rector
+                if: matrix.symfony == '^7.4'
+                run: vendor/bin/rector process --dry-run --no-progress-bar
+
+            -
+                name: Run PHPMD
+                run: vendor/bin/phpmd src text phpmd.xml
+
+            -
+                name: Run Deptrac
+                run: vendor/bin/deptrac analyse --config-file=deptrac.yaml --no-progress
+
+            -
+                name: Run ESLint
+                if: matrix.symfony == '^7.4'
+                run: npx --yes eslint@9.39.1 --no-error-on-unmatched-pattern assets
+
+            -
+                name: Run stylelint
+                if: matrix.symfony == '^7.4'
+                run: npx --yes stylelint@16.26.1 --allow-empty-input 'assets/**/*.scss' --config .stylelintrc.json
+
+            -
+                name: Detect duplicated code
+                run: npx --yes jscpd@4.0.5 --config .jscpd.json
+
+            -
+                name: Audit Composer dependencies
+                if: matrix.sylius == '~2.3.0' && matrix.symfony == '^7.4'
+                run: composer audit --abandoned=report
+
+            -
+                name: Validate container
+                run: vendor/bin/console lint:container
+
+            -
+                name: Lint YAML and Twig
+                run: |
+                    vendor/bin/console lint:yaml config translations --parse-tags
+                    vendor/bin/console lint:twig templates
+
+            -
+                name: Run Non-unit PHPUnit tests
+                run: vendor/bin/phpunit --colors=always --testsuite=non-unit
+
+            -
+                name: Run Behat
+                if: hashFiles('features/**/*.feature') != ''
+                run: vendor/bin/behat --colors --strict -vvv --no-interaction -f progress || vendor/bin/behat --colors --strict -vvv --no-interaction -f progress --rerun
+
+            -
+                name: Upload Behat logs
+                uses: actions/upload-artifact@v4
+                if: failure()
+                with:
+                    name: "Behat logs - Sylius ${{ matrix.sylius }} - ${{ matrix.database }} - ${{ github.run_id }}"
+                    path: etc/build/
+                    if-no-files-found: ignore
+                    compression-level: 6
+                    overwrite: true

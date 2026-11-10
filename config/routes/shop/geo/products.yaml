@@ -1,0 +1,10 @@
+acseo_sylius_geo_plugin_shop_product_markdown:
+    path: /{slug}.md
+    methods: [GET]
+    defaults:
+        _controller: ACSEO\SyliusGeoPlugin\Controller\ProductMarkdownController
+        _acseo_sylius_geo_plugin_endpoint: product_markdown
+        _sylius:
+            section: shop
+    requirements:
+        slug: '[^/]+'

@@ -1,0 +1,26 @@
+imports:
+    - { resource: "@ACSEOSyliusGeoPlugin/config/config.yaml" }
+    - { resource: "services_test.php" }
+
+twig:
+    paths:
+        '%kernel.project_dir%/../../../tests/TestApplication/templates': ~
+
+acseo_sylius_geo_plugin:
+    product_exclusion:
+        taxon_codes: ['geo_private']
+        attribute_codes: ['geo_hidden']
+        attribute_values:
+            geo_visibility: ['private']
+
+# Remove if you do not need to extend entities
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    TestApplication:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/../../../tests/TestApplication/src/Entity'
+                        prefix: Tests\ACSEO\SyliusGeoPlugin

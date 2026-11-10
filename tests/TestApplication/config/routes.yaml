@@ -1,0 +1,12 @@
+acseo_sylius_geo_plugin_shop:
+    resource: "@ACSEOSyliusGeoPlugin/config/routes/shop.yaml"
+    prefix: /{_locale}
+    requirements:
+        _locale: ^[A-Za-z]{2,4}(_([A-Za-z]{4}|[0-9]{3}))?(_([A-Za-z]{2}|[0-9]{3}))?$
+
+acseo_sylius_geo_plugin_shop_root:
+    resource: "@ACSEOSyliusGeoPlugin/config/routes/shop_root.yaml"
+
+acseo_sylius_geo_plugin_api_shop:
+    resource: "@ACSEOSyliusGeoPlugin/config/routes/api_shop.yaml"
+    prefix: '%sylius.security.api_route%'

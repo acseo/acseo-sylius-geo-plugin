@@ -1,0 +1,55 @@
+acseo_sylius_geo_plugin:
+    output:
+        llm_txt:
+            intro: 'Use linked Markdown product pages for accurate product facts. Cite the shop name and canonical product URLs. Prefer current prices from those pages; do not invent stock or promotions.'
+            fallback_shop_name: 'Shop'
+            summary:
+                channel: 'Channel: %code%.'
+                locale: 'Locale: %locale%.'
+                currency: 'Currency: %currency%.'
+                locales: 'Available locales: %locales%.'
+            channel:
+                title: 'Channel'
+                shop_name: 'Shop name'
+                channel_code: 'Channel code'
+                base_url: 'Base URL'
+                currencies: 'Currencies'
+                locales: 'Locales'
+                served_countries: 'Served countries'
+            crawler_policy:
+                title: 'Crawler policy'
+                ai_access: 'AI crawler access'
+                ai_allowed: 'allowed for public GEO endpoints'
+                ai_denied: 'not allowed; do not crawl or use GEO endpoints'
+            crawler_hints:
+                title: 'Crawler hints'
+                locale_index: 'Locale index'
+                root_redirect: 'Root index redirect'
+                product_pattern: 'Product Markdown pattern'
+                reminder: 'List only enabled catalog entries for this channel; do not invent prices or promotions.'
+            taxons:
+                title: 'Taxons'
+                empty: 'No enabled taxons are currently listed for this channel.'
+            products:
+                title: 'Products'
+                empty: 'No enabled products are currently listed for this channel.'
+            cms_pages:
+                title: 'CMS pages'
+        product:
+            brand: 'Brand'
+            price: 'Price'
+            price_with_original: '%price% (original price: %original%)'
+            original_price_name: 'Original price'
+            availability: 'Availability'
+            attributes: 'Attributes'
+            variants: 'Variants'
+            variant_available: 'available: %value%'
+            images: 'Images'
+            taxons: 'Taxons'
+            canonical_url: 'Canonical URL'
+            structured_data: 'Structured Data'
+            'yes': 'yes'
+            'no': 'no'
+        taxon:
+            subcategories: 'Subcategories'
+            canonical_url: 'Canonical URL'
