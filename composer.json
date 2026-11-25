@@ -35,7 +35,7 @@
         "behat/mink": "^1.12",
         "behat/mink-browserkit-driver": "^2.2",
         "dbrekelmans/bdi": "^1.4",
-        "deptrac/deptrac": "^2.0",
+        "deptrac/deptrac": "^4.7",
         "dmore/behat-chrome-extension": "^1.4",
         "dmore/chrome-mink-driver": "^2.9",
         "ekino/phpstan-banned-code": "^3.2",
