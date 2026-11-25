@@ -46,7 +46,7 @@
         "friends-of-behat/symfony-extension": "^2.6",
         "friends-of-behat/variadic-extension": "^1.6",
         "nyholm/psr7": "^1.8",
-        "phpmd/phpmd": "^2.15",
+        "phpmd/phpmd": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.1",
